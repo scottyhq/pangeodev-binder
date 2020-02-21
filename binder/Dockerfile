@@ -19,7 +19,9 @@ COPY . ${HOME}
 
 # Change to binder folder if it exists
 WORKDIR ${HOME}
-RUN [ -d "binder" ] && cd binder 
+RUN [ -d "binder" ] && cd binder \
+    && pwd \
+    && ls -l
 
 # Apt.txt Packages
 # NOTE: require binder-compatible repos to use binder/ folder
