@@ -20,8 +20,8 @@ COPY . ${HOME}
 WORKDIR ${HOME}
 
 # Apt.txt Packages
-RUN [ -d "binder" ] && cd binder \
-    && apt-get update --fix-missing \
+RUN [ -d binder ] && cd binder \
+    ; apt-get update --fix-missing \
     && xargs -a apt.txt apt-get install -y \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
@@ -37,18 +37,18 @@ RUN groupadd \
         --no-log-init \
         --shell /bin/bash \
         --uid ${NB_UID} \
-        ${NB_USER} 
-        
+        ${NB_USER}
+
 # Move things around filesystem and change ownership
-RUN [ -d "binder" ] && cd binder \
-    && cp repo2docker-entrypoint /usr/local/bin/repo2docker-entrypoint \
+RUN [ -d binder ] && cd binder \
+    ; cp repo2docker-entrypoint /usr/local/bin/repo2docker-entrypoint \
     && mkdir ${CONDA_DIR} \
     && ln -s ${CONDA_DIR}/etc/profile.d/conda.sh /etc/profile.d/conda.sh \
     && chown -R ${NB_USER}:${NB_USER} ${CONDA_DIR} \
     && chown -R ${NB_USER}:${NB_USER} ${HOME}
 
 
-# RUN this section as NB_USER 
+# RUN this section as NB_USER
 # -----
 USER ${NB_USER}
 
@@ -66,8 +66,8 @@ RUN export PATH=${CONDA_DIR}/bin:$PATH \
     && find ${CONDA_DIR} -follow -type f -name '*.pyc' -delete
 
 # Create "notebook" environment from environment.yml and cleanup
-RUN [ -d "binder" ] && cd binder \
-    && export PATH=${CONDA_DIR}/bin:$PATH \
+RUN [ -d binder ] && cd binder \
+    ; export PATH=${CONDA_DIR}/bin:$PATH \
     && conda env create -f environment.yml \
     && conda clean -afy \
     && find ${CONDA_DIR} -follow -type f -name '*.a' -delete \
@@ -76,8 +76,8 @@ RUN [ -d "binder" ] && cd binder \
     && find ${NB_PYTHON_PREFIX}/lib/python*/site-packages/bokeh/server/static -follow -type f -name '*.js' ! -name '*.min.js' -delete
 
 # Run postBuild script within "notebook" environment
-RUN [ -d "binder" ] && cd binder \
-    && export PATH=${NB_PYTHON_PREFIX}/bin:$PATH \
+RUN [ -d binder ] && cd binder \
+    ; export PATH=${NB_PYTHON_PREFIX}/bin:$PATH \
     && ./postBuild \
     && mkdir -p ${NB_PYTHON_PREFIX}/etc/dask \
     && cp dask_config.yaml ${NB_PYTHON_PREFIX}/etc/dask/dask.yaml \
