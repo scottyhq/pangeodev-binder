@@ -17,17 +17,11 @@ ENV HOME /home/${USER}
 # Copy auxiliary files
 COPY . ${HOME}
 
-# Change to binder folder if it exists
 WORKDIR ${HOME}
-RUN [ -d "binder" ] && cd binder \
-    && pwd \
-    && ls -l
 
 # Apt.txt Packages
-# NOTE: require binder-compatible repos to use binder/ folder
-RUN apt-get update --fix-missing \
-    && pwd \
-    && ls -l \
+RUN [ -d "binder" ] && cd binder \
+    && apt-get update --fix-missing \
     && xargs -a apt.txt apt-get install -y \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
@@ -43,12 +37,14 @@ RUN groupadd \
         --no-log-init \
         --shell /bin/bash \
         --uid ${NB_UID} \
-        ${NB_USER} \
+        ${NB_USER} 
+        
+# Move things around filesystem and change ownership
+RUN [ -d "binder" ] && cd binder \
+    && cp repo2docker-entrypoint /usr/local/bin/repo2docker-entrypoint \
     && mkdir ${CONDA_DIR} \
     && ln -s ${CONDA_DIR}/etc/profile.d/conda.sh /etc/profile.d/conda.sh \
-    && cp repo2docker-entrypoint /usr/local/bin/repo2docker-entrypoint
-
-RUN chown -R ${NB_USER}:${NB_USER} ${CONDA_DIR} \
+    && chown -R ${NB_USER}:${NB_USER} ${CONDA_DIR} \
     && chown -R ${NB_USER}:${NB_USER} ${HOME}
 
 
@@ -69,22 +65,26 @@ RUN wget --quiet https://repo.anaconda.com/miniconda/Miniconda3-${CONDA_VERSION}
     && find ${CONDA_DIR} -follow -type f -name '*.a' -delete \
     && find ${CONDA_DIR} -follow -type f -name '*.pyc' -delete
 
-# Conda "notebook" environment and cleanup
-RUN conda env create -f environment.yml \
+# Creat "notebook" environment from environment.yml and cleanup
+RUN [ -d "binder" ] && cd binder \
+    && conda env create -f environment.yml \
     && conda clean -afy \
     && find ${CONDA_DIR} -follow -type f -name '*.a' -delete \
     && find ${CONDA_DIR} -follow -type f -name '*.pyc' -delete \
     && find ${CONDA_DIR} -follow -type f -name '*.js.map' -delete \
     && find ${CONDA_DIR}/envs/notebook/lib/python*/site-packages/bokeh/server/static -follow -type f -name '*.js' ! -name '*.min.js' -delete
 
-# PostBuild
+# Run postBuild script
 ENV PATH ${CONDA_DIR}/envs/notebook/bin:$PATH
-RUN ./postBuild \
+RUN [ -d "binder" ] && cd binder \
+    && ./postBuild \
     && mkdir -p ${NB_PYTHON_PREFIX}/etc/dask \
     && cp dask_config.yaml ${NB_PYTHON_PREFIX}/etc/dask/dask.yaml \
     && rm -rf ${HOME}/.cache ${HOME}/.npm ${HOME}/.yarn \
     && rm -rf ${NB_PYTHON_PREFIX}/share/jupyter/lab/staging \
     && find ${NB_PYTHON_PREFIX} -follow -type f -name '*.js.map' -delete
+
+# Add start script
 
 EXPOSE 8888
 
