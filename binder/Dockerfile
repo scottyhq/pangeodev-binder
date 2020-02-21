@@ -53,7 +53,7 @@ RUN [ -d "binder" ] && cd binder \
 USER ${NB_USER}
 
 # Install miniconda and configure conda to activate 'notebook' by default
-RUN && export PATH=${CONDA_DIR}/bin:$PATH
+RUN export PATH=${CONDA_DIR}/bin:$PATH \
     && wget --quiet https://repo.anaconda.com/miniconda/Miniconda3-${CONDA_VERSION}-Linux-x86_64.sh -O ~/miniconda.sh \
     && /bin/bash ~/miniconda.sh -u -b -p ${CONDA_DIR} \
     && rm ~/miniconda.sh \
