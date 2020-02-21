@@ -73,11 +73,11 @@ RUN [ -d "binder" ] && cd binder \
     && find ${CONDA_DIR} -follow -type f -name '*.a' -delete \
     && find ${CONDA_DIR} -follow -type f -name '*.pyc' -delete \
     && find ${CONDA_DIR} -follow -type f -name '*.js.map' -delete \
-    && find ${NB_CONDA_PREFIX}/lib/python*/site-packages/bokeh/server/static -follow -type f -name '*.js' ! -name '*.min.js' -delete
+    && find ${NB_PYTHON_PREFIX}/lib/python*/site-packages/bokeh/server/static -follow -type f -name '*.js' ! -name '*.min.js' -delete
 
 # Run postBuild script within "notebook" environment
 RUN [ -d "binder" ] && cd binder \
-    && export PATH=${NB_CONDA_PREFIX}/bin:$PATH \
+    && export PATH=${NB_PYTHON_PREFIX}/bin:$PATH \
     && ./postBuild \
     && mkdir -p ${NB_PYTHON_PREFIX}/etc/dask \
     && cp dask_config.yaml ${NB_PYTHON_PREFIX}/etc/dask/dask.yaml \
