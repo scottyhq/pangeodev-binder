@@ -26,6 +26,8 @@ RUN [ -d "binder" ] && cd binder \
 # Apt.txt Packages
 # NOTE: require binder-compatible repos to use binder/ folder
 RUN apt-get update --fix-missing \
+    && pwd \
+    && ls -l \
     && xargs -a apt.txt apt-get install -y \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
