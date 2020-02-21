@@ -10,7 +10,7 @@ ARG NB_UID=1000
 ENV SHELL /bin/bash
 ENV LANG=C.UTF-8 LC_ALL=C.UTF-8
 ENV CONDA_DIR /srv/conda
-ENV NB_PYTHON_PREFIX ${CONDA_DIR}
+ENV NB_PYTHON_PREFIX ${CONDA_DIR}/envs/notebook
 ENV USER ${NB_USER}
 ENV HOME /home/${USER}
 
@@ -52,9 +52,9 @@ RUN [ -d "binder" ] && cd binder \
 # -----
 USER ${NB_USER}
 
-# Install miniconda and configure conda
-ENV PATH ${CONDA_DIR}/bin:$PATH
-RUN wget --quiet https://repo.anaconda.com/miniconda/Miniconda3-${CONDA_VERSION}-Linux-x86_64.sh -O ~/miniconda.sh \
+# Install miniconda and configure conda to activate 'notebook' by default
+RUN && export PATH=${CONDA_DIR}/bin:$PATH
+    && wget --quiet https://repo.anaconda.com/miniconda/Miniconda3-${CONDA_VERSION}-Linux-x86_64.sh -O ~/miniconda.sh \
     && /bin/bash ~/miniconda.sh -u -b -p ${CONDA_DIR} \
     && rm ~/miniconda.sh \
     && conda clean -afy \
@@ -65,18 +65,19 @@ RUN wget --quiet https://repo.anaconda.com/miniconda/Miniconda3-${CONDA_VERSION}
     && find ${CONDA_DIR} -follow -type f -name '*.a' -delete \
     && find ${CONDA_DIR} -follow -type f -name '*.pyc' -delete
 
-# Creat "notebook" environment from environment.yml and cleanup
+# Create "notebook" environment from environment.yml and cleanup
 RUN [ -d "binder" ] && cd binder \
+    && export PATH=${CONDA_DIR}/bin:$PATH \
     && conda env create -f environment.yml \
     && conda clean -afy \
     && find ${CONDA_DIR} -follow -type f -name '*.a' -delete \
     && find ${CONDA_DIR} -follow -type f -name '*.pyc' -delete \
     && find ${CONDA_DIR} -follow -type f -name '*.js.map' -delete \
-    && find ${CONDA_DIR}/envs/notebook/lib/python*/site-packages/bokeh/server/static -follow -type f -name '*.js' ! -name '*.min.js' -delete
+    && find ${NB_CONDA_PREFIX}/lib/python*/site-packages/bokeh/server/static -follow -type f -name '*.js' ! -name '*.min.js' -delete
 
-# Run postBuild script
-ENV PATH ${CONDA_DIR}/envs/notebook/bin:$PATH
+# Run postBuild script within "notebook" environment
 RUN [ -d "binder" ] && cd binder \
+    && export PATH=${NB_CONDA_PREFIX}/bin:$PATH \
     && ./postBuild \
     && mkdir -p ${NB_PYTHON_PREFIX}/etc/dask \
     && cp dask_config.yaml ${NB_PYTHON_PREFIX}/etc/dask/dask.yaml \
@@ -84,7 +85,7 @@ RUN [ -d "binder" ] && cd binder \
     && rm -rf ${NB_PYTHON_PREFIX}/share/jupyter/lab/staging \
     && find ${NB_PYTHON_PREFIX} -follow -type f -name '*.js.map' -delete
 
-# Add start script
+# NOTE: might have to modify way repo2docker deals with start scripts...
 
 EXPOSE 8888
 
