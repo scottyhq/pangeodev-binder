@@ -3,6 +3,7 @@
 # ==== ONLY EDIT WITHIN THIS BLOCK =====
 
 export MY_ENV_VAR="myValue"
+export DASK_IMAGE_SPEC=${JUPYTER_IMAGE_SPEC}
 
 # ==== ONLY EDIT WITHIN THIS BLOCK =====
 
