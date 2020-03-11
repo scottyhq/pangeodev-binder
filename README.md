@@ -1,5 +1,7 @@
 # pangeodev-binder
 
+Template repo to test new pangeo base-image for binderhubs
+
 #### Launch on pangeo binders
 [![badge](https://img.shields.io/static/v1.svg?logo=Jupyter&label=Pangeo+Binder&message=GCE+us-central1&color=blue)](https://binder.pangeo.io/v2/gh/scottyhq/pangeodev-binder/master?urlpath=lab)
 
