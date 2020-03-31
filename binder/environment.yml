@@ -2,7 +2,6 @@ name: pangeo
 channels:
   - conda-forge
 dependencies:
-# NOTE!!!!! must specify pangeo-notebook metapackage if using environment.yml
-  - pangeo-notebook=0.0.2
+  - pangeo-notebook=2020.03.27
   - geoviews
   - sat-stac
