@@ -1,4 +1,4 @@
 FROM pangeo/pangeo-notebook:2020.04.22
 
-# Override start script
-COPY binder/start /srv/start
+# Override start script (/srv/start)
+COPY binder/start binder/jupyterlab-workspace.json /srv/
