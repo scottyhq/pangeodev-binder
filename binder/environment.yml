@@ -1,0 +1,96 @@
+name: pangeo
+channels:
+ - conda-forge
+dependencies:
+# override pangeo-notebook packages
+ - pangeo-dask =2020.12.11
+ - dask-labextension =3
+ - ipywidgets =7.5.1
+ - jupyter-server-proxy =1.5.2
+ - jupyterhub-singleuser =1.3.0
+ - jupyterlab =2
+ - nbgitpuller =0.9.0
+ - nodejs >=12
+# other pangeo-notebook packages 
+ - python=3.8*
+ - pip=20
+ - adlfs
+ - awscli
+ - boto3
+ - bottleneck
+ - cartopy
+ - cfgrib
+ - cmip6_preprocessing
+ - ciso
+ - dask-ml
+ - datashader
+ - descartes
+ - eofs
+ - erddapy
+ - esmpy
+ - fastjmd95
+ - fsspec
+ - gcsfs
+ - geocube
+ - geopandas
+ - geoviews-core
+ - gsw
+ - h5netcdf
+ - h5py
+ - holoviews
+ - hvplot
+ - intake
+ - intake-esm
+ - intake-geopandas
+ - intake-stac
+ - intake-xarray
+ - ipyleaflet
+ - ipywidgets
+ - jupyter-panel-proxy
+ - lz4
+ - matplotlib-base
+ - metpy
+ - nb_conda_kernels
+ - nbstripout
+ - nc-time-axis
+ - netcdf4
+ - nomkl
+ - numcodecs
+ - numpy
+ - pandas
+ - panel
+ - parcels
+ - prefect
+ - pyarrow
+ - pycamhd
+ - pydap
+ - pystac
+ - python-blosc
+ - python-gist
+ - python-graphviz
+ - rasterio
+ - rechunker
+ - rio-cogeo
+ - rioxarray
+ - s3fs>0.5
+ - sat-search
+ - sat-stac
+ - satpy
+ - scikit-image
+ - scikit-learn
+ - scipy
+ - sparse
+ - tiledb-py
+ - xarray
+ - xarray_leaflet
+ - xarray-spatial
+ - xcape
+ - xcube
+ - xesmf
+ - xgcm
+ - xhistogram
+ - xlayers
+ - xmitgcm
+ - xpublish
+ - xrft
+ - zarr

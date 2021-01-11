@@ -2,12 +2,10 @@
 
 # ==== ONLY EDIT WITHIN THIS BLOCK =====
 
-# Replace DASK_DASHBOARD_URL with the proxy location
-sed -i -e "s|DASK_DASHBOARD_URL|${JUPYTERHUB_BASE_URL}user/${JUPYTERHUB_USER}/proxy/8787|g" /srv/jupyterlab-workspace.json
-
-# Set the workspace config
-export JUPYTERLAB_WORKSPACES_DIR=srv/jupyterlab-workspaces
-jupyter lab workspaces import /srv/jupyterlab-workspace.json
+export PANGEO_ENV="pangeo-notebook"
+if ! [[ -z "${PANGEO_SCRATCH_PREFIX}" ]] && ! [[ -z "${JUPYTERHUB_USER}" ]]; then
+    export PANGEO_SCRATCH="${PANGEO_SCRATCH_PREFIX}/${JUPYTERHUB_USER}/"
+fi
 
 # ==== ONLY EDIT WITHIN THIS BLOCK =====
 
